@@ -1,0 +1,32 @@
+{% extends 'assessment/base.html' %}
+{% block titlebar %}: Results{% endblock %}
+{% block pagetitle %}Results{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <p><strong>Survey Name: {{ result.survey }}</strong></p>
+  <p><em>Answered by: {{ result.user }}</em></p>
+  {% if user.is_staff %}
+  <p><em>Score: {{ result.score }}</em></p>
+  {% endif %}
+  {% if result.excess_seconds > 0 %}
+  <p><em>{{ result.excess_seconds }} seconds over time limit</em></p>
+  {% endif %}
+</div>
+
+<div class="container">
+    <table class="table">
+        <thead>
+            <th>Question</th>
+            <th>Answer</th>
+        </thead>
+        {% for answer in result.answers.all %}
+        <tr>
+            <td>{{answer.question }}</td>
+            <td>{{ answer }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

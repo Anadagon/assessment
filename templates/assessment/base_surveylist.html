@@ -1,0 +1,32 @@
+{% extends "assessment/base.html" %}
+{% block titlebar %}: Surveys{% endblock %}
+{% block pagetitle %}Surveys{% endblock %}
+
+{% block content %}
+
+{% if incomplete_available or user_results %}
+
+<div class="well col-md-4">
+    <h4>Surveys</h4>
+    {% for survey in incomplete_available %}
+        <a href="{{ survey.get_absolute_url }}" class="btn btn-info btn-block">{{ survey.name }}</a>
+    {% endfor %}
+    {% if not incomplete_available %}
+        <span><strong class="bg-warning">No remaining surveys to complete.</strong></span>
+    {% endif %}
+</div>
+<div class="col-md-offset-1 well col-md-4">
+    <h4>Completed</h4>
+    {% for result in user_results %}
+    <a href="{{ result.get_absolute_url }}" class="btn btn-danger btn-block">{{ result.survey.name }} - {{ result.completed_on }}</a>
+    {% endfor %}
+    {% if not user_results %}
+        <span><strong class="bg-warning">No surveys completed.</strong></span>
+    {% endif %}
+</div>
+
+{% else %}
+    <span><strong class="col-md-offset-1 bg-warning">No surveys available.</strong></span>
+{% endif %}
+
+{% endblock %}

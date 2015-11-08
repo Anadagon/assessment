@@ -1,0 +1,31 @@
+.radiotable td input {
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 50%;
+}
+
+.radiotable td label {
+    float: right;
+}
+
+.radiotable td {
+    padding-left: 10px;
+}
+
+.dispositiontable td {
+    padding-top: 10px;
+}
+
+.dispositiontable th {
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+ul {
+    list-style: none;
+}
+
+div label ul li {
+    display: inline;
+    padding-left: 5px;
+}

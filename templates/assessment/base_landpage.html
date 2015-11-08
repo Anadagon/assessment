@@ -1,0 +1,59 @@
+{% extends "assessment/base.html" %}
+{% block titlebar %}: Welcome{% endblock %}
+{% block pagetitle %}Welcome{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}assessment/landpage.css"
+      xmlns="http://www.w3.org/1999/html"/>
+{% endblock extra_css %}
+
+{% block content %}
+
+<div class="container" id="bordered">
+    <img src="{{STATIC_URL}}assessment/Carswell.jpg" id="first">
+    <h4>Landing Page:</h4>
+    <h5>{{ user.first_name }}:</h5>
+    <p class="text">
+        Welcome to Carswell's Assessment site. Today you’ll complete a variety of electronic
+assessments over an encrypted connection and all of your data will be stored in a secured
+database. The assessments you have filled out today have been picked for their relevance to the
+position that you are applying for and will take up to 1 or 2 hours to complete.
+    </p>
+    <h4>Today you will be completing:</h4>
+    <p>
+        {% for assessment in assessments %}
+            <li>{{ assessment }}</li>
+        {% endfor %}
+    </p>
+    <h4>Directions:</h4>
+    <p class="text">
+        Once you click “Next” you will be forwarded to your assessment portal page. This page will
+contain a list of your assessments on the left side, one button for each assessment that you are
+to complete. Once you click on a button, you’ll be taken to that assessment. Simply fill out the
+questions and then click “Finish”. This will take you back to the main portal site, and you’ll
+see that assessment now shows up as completed. Keep going until all of your assessments are
+marked as completed and show up in red on the right side of the page.
+    </p>
+    <p class="text">
+Several assessments will forward you to a secured external page in order to fill out the survey.
+To fill out these assessments, simply click the button that you are instructed to fill out and the
+survey will open up in a new window. Just follow the instructions in that window and close it
+when you are finished and then click “Finish” when you’re back to the assessment page. This
+will mark it as complete and take you back to main portal where you can move on to the next
+assessment.
+    </p>
+    <p class="text">
+Once you are finished with all of your assessments, you can safely close the window.
+    </p>
+    <p class="text">
+Some assessments may require you to come on site. If you have been assigned an assessment
+such as this, we will contact you by phone or e-mail to setup an appointment.
+    </p>
+    <div class="row" id="buttonblock">
+        <img src="{{STATIC_URL}}assessment/carswell-banner.jpg" id="second">
+        </br>
+        <a href="{{ profile }}" class="btn btn-primary btn-block">Next</a>
+        </br>
+    </div>
+</div>
+
+{% endblock %}

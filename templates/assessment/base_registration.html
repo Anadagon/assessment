@@ -1,0 +1,27 @@
+{% extends "assessment/base.html" %}
+{% block titlebar %}: Registration{% endblock %}
+{% block pagetitle %}Registration{% endblock %}
+
+{% block content %}
+
+{% if registered %}
+<span class="bg-success">User registered.</span> <a href="{% url 'assessment:assessment_users' %}" class="btn btn-info">User List</a>
+<br><br>
+<div class="well"><strong>Login URL:</strong> <a href="{{ login_url }}">Login as User</a></div>
+{% endif %}
+
+<div class="well col-md-4">
+    <fieldset>
+        <form action="{% url 'assessment:assessment_registration' %}" method="post">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {% if user.is_staff %}
+            <input type="submit" value="Register User" class="btn btn-success" />
+            {% else %}
+            <input type="submit" value="Update Profile" class="btn btn-success" />
+            {% endif %}
+        </form>
+    </fieldset>
+</div>
+
+{% endblock %}

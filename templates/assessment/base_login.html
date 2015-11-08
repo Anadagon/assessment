@@ -1,0 +1,16 @@
+{% extends "assessment/base.html" %}
+{% block titlebar %}: Login{% endblock %}
+{% block pagetitle %}Login{% endblock %}
+{% block topbarbuttons %}{% endblock %}
+
+{% block content %}
+
+<fieldset>
+    <form action="{% url 'assessment:assessment_login' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login" class="btn btn-success" />
+    </form>
+</fieldset>
+
+{% endblock %}

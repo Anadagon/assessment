@@ -1,0 +1,76 @@
+{% extends "assessment/base.html" %}
+{% block titlebar %}: User{% endblock %}
+{% block pagetitle %}User{% endblock %}
+
+{% block content %}
+
+{% if userinfo %}
+
+{% if updated %}
+<span class="bg-success">Updated.</span>
+<br><br>
+{% endif %}
+<div class="container">
+    <div class="well col-md-4">
+        <fieldset>
+            <form action="{{ post_url }}" method="post">
+                {% csrf_token %}
+                {{ user_form.as_p }}
+                <input type="submit" value="Update" class="btn btn-success" />
+            </form>
+        </fieldset>
+    </div>
+    <div class=" col-md-1"></div>
+
+    {% if userinfo.results.all %}
+    <div class="well col-md-7">
+        <table class="table table-hover table-condensed table-responsive">
+            <thead>
+                <tr>
+                    <th>Test</th>
+                    <th>Date</th>
+                    {% if user.is_staff %}
+                    <th>Score</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in userinfo.results.all %}
+                <tr onclick="window.document.location='{{ result.get_absolute_url }}';">
+                    <td>{{ result.survey }}</td>
+                    <td>{{ result.completed_on }}</td>
+                    {% if user.is_staff %}
+                    <td>{{ result.score }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+</div>
+
+<div class="container">
+    {% if user.is_staff and userinfo.id != user.id %}
+
+    <a href="{% url 'assessment:assessment_deleteuser' userinfo.id %}" class="btn btn-warning">Delete User</a>
+    <div><br></div>
+    <div class="well"><strong>Login URL:</strong> <a href="{{ login_url }}">Login as User</a></div>
+
+    {% endif %}
+</div>
+
+{% if surveys_next %}
+<div class="container">
+    <a href="{% url 'assessment:assessment_surveys' %}" class="btn btn-primary btn-block">Next</a>
+</div>
+{% endif %}
+
+{% else %}
+
+<span><strong class="bg-warning">User not found.</strong></span>
+
+{% endif %}
+
+{% endblock %}

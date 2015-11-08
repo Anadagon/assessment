@@ -1,0 +1,141 @@
+{% extends "assessment/base.html" %}
+{% load assessment_tags %}
+{% block titlebar %}: {{ survey.name }}{% endblock %}
+{% block pagetitle %}{{ survey.name }}{% endblock %}
+{% block timer %}{% if seconds_allowed > 0 %}<div id="timer" style="padding: 5px; border-radius: 3px; background-color: #ff7777;"></div>{% endif %}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}assessment/radio.css"/>
+{% endblock extra_css %}
+{% block content %}
+
+{% if survey.images %}
+    {% for image in survey.images.all %}
+        <img src="{{ image }}"/>
+    {% endfor %}
+{% endif %}
+
+{% if survey.minutes_allowed > 0 %}
+
+<script type="text/javascript">
+var count = {{ seconds_allowed }};
+
+var counter = setInterval(timer, 1000);
+
+function timer(){
+    count = count - 1;
+    if(count <= 0){
+        clearInterval(counter);
+        $("form").submit();
+        return;
+    }
+
+    var seconds = Math.floor(count);
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes*60;
+    if(minutes < 10){minutes = "0" + minutes;}
+    if(seconds < 10){seconds = "0" + seconds;}
+    
+    if(count == 500){
+        alert("5 minutes remaining...");
+    }
+
+    document.getElementById("timer").innerHTML = '<strong>Time remaining:</strong> ' +  minutes + ':' + seconds;
+}
+</script>
+
+{% endif %}
+
+<div class="container">
+    <div class="page-header">
+        <h1>{{ survey.name }}</h1>
+        <p>{{ survey.description|linebreaks }}</p>
+    </div>
+
+    {% if survey.external_survey_url or external_url %}
+
+    <div class="container">
+        <div class="well col-md-4">
+            {% if external_url %}
+            <a id="externalsurvey" class="btn btn-primary btn-lg btn-block" href="#" data-url="{{ external_url }}">Display External Survey</a>
+            {% else %}
+            <a id="externalsurvey" class="btn btn-primary btn-lg btn-block" href="#" data-url="{{ survey.external_survey_url }}">Display External Survey</a>
+            {% endif %}
+        </div>
+    </div>
+    <script type="text/javascript">
+        var popup_width = $(window).width() * 0.9
+        var popup_height = $(window).height() * 0.9
+        
+        $('#externalsurvey').on('click', function(e){
+        var url = $(this).data('url');
+    window.open(url, '_blank', 'location=yes,height=' + popup_height + ',width=' + popup_width + ',scrollbars=yes,status=yes');
+        });
+    </script>
+
+    {% endif %}
+
+    <form id="survey-form" action="." method="post">{% csrf_token %}
+        {% for field, question in survey_form %}
+        <div class="row">
+            <div class="col-md-3"><strong>{{ question|linebreaks }}</strong></div>
+            <div class="col-md-9">
+                {% if question.question_type == 1 or question.question_type == 2 or question.question_type == 5 %}
+                    {% for choice in form.visible_fields %}
+                        {% if question.question_name in choice.help_text %}
+                            <label style="float: left; width: auto; padding-right: 1.5em; padding-left: 1.5em;">
+                                {{ choice }}
+                            </label>
+                        {% endif %}
+                    {% endfor %}
+                {% elif question.question_type == 6 %}
+                    <table class="radiotable">
+                        {% for choice in form.visible_fields %}
+                            {% if question.question_name in choice.help_text %}
+                                {% for field in choice %}
+                                <tr>
+                                    <td>
+                                        {{ field.tag }}
+                                    </td>
+                                    <td>
+                                        {{ field.choice_label|linebreaks }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                {% elif question.question_type == 7 %}
+                    <table class="dispositiontable">
+                        {{ form.non_field_errors }}
+                        {% for choice in form.visible_fields %}
+                            {% if question.question_name in choice.help_text %}
+                            <tr>
+                                <th>
+                                    {{ choice.label }}
+                                </th>
+                                <td>
+                                    {{ choice }}
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                {% elif question.question_type == 3 %}
+                    {% for choice in form.visible_fields %}
+                            {% if question.question_name in choice.help_text %}
+                                {{ choice }}
+                            {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+        <br>
+        <div class="row">
+            <input type="submit" value="Finish" class="btn btn-lg btn-warning btn-block" onclick="return confirm('Are you sure?')" />
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
